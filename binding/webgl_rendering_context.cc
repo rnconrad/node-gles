@@ -413,6 +413,12 @@ napi_status WebGLRenderingContext::Register(napi_env env, napi_value exports) {
   napi_status nstatus;
 
   napi_property_descriptor properties[] = {
+      // WebGL properties:
+      NAPI_DEFINE_PROPERTY_GETTER("canvas", GetCanvas),
+      NAPI_DEFINE_PROPERTY_GETTER("drawingBufferHeight",
+                                  GetDrawingBufferHeight),
+      NAPI_DEFINE_PROPERTY_GETTER("drawingBufferWidth", GetDrawingBufferWidth),
+
       // WebGL methods:
       // clang-format off
       NAPI_DEFINE_METHOD("attachShader", AttachShader),
@@ -1037,6 +1043,54 @@ napi_value WebGLRenderingContext::InitInternal(napi_env env,
 void WebGLRenderingContext::Cleanup(napi_env env, void *native, void *hint) {
   WebGLRenderingContext *context = static_cast<WebGLRenderingContext *>(native);
   delete context;
+}
+
+/* static */
+napi_value WebGLRenderingContext::GetCanvas(napi_env env,
+                                            napi_callback_info info) {
+  napi_status nstatus;
+
+  napi_value result;
+  nstatus = napi_get_null(env, &result);
+  ENSURE_NAPI_OK_RETVAL(env, nstatus, nullptr);
+
+  return result;
+}
+
+/* static */
+napi_value WebGLRenderingContext::GetDrawingBufferHeight(
+    napi_env env, napi_callback_info info) {
+  napi_status nstatus;
+
+  WebGLRenderingContext *context = nullptr;
+  nstatus = GetContext(env, info, &context);
+  ENSURE_NAPI_OK_RETVAL(env, nstatus, nullptr);
+
+  int32_t height = context->eglContextWrapper_->QuerySurfaceHeight();
+
+  napi_value value;
+  nstatus = napi_create_int32(env, height, &value);
+  ENSURE_NAPI_OK_RETVAL(env, nstatus, nullptr);
+
+  return value;
+}
+
+/* static */
+napi_value WebGLRenderingContext::GetDrawingBufferWidth(
+    napi_env env, napi_callback_info info) {
+  napi_status nstatus;
+
+  WebGLRenderingContext *context = nullptr;
+  nstatus = GetContext(env, info, &context);
+  ENSURE_NAPI_OK_RETVAL(env, nstatus, nullptr);
+
+  int32_t width = context->eglContextWrapper_->QuerySurfaceWidth();
+
+  napi_value value;
+  nstatus = napi_create_int32(env, width, &value);
+  ENSURE_NAPI_OK_RETVAL(env, nstatus, nullptr);
+
+  return value;
 }
 
 /** Exported WebGL wrapper methods
@@ -4512,9 +4566,9 @@ napi_value WebGLRenderingContext::Uniform1iv(napi_env env,
   nstatus = UnwrapContext(env, js_this, &context);
   ENSURE_NAPI_OK_RETVAL(env, nstatus, nullptr);
 
-  context->eglContextWrapper_->glUniform1iv(
-      location, static_cast<GLsizei>(alb.size()),
-      static_cast<GLint *>(alb.data));
+  context->eglContextWrapper_->glUniform1iv(location,
+                                            static_cast<GLsizei>(alb.size()),
+                                            static_cast<GLint *>(alb.data));
 
 #if DEBUG
   context->CheckForErrors();

@@ -231,6 +231,9 @@ inline bool EnsureArgc(napi_env env, size_t argc, size_t argc_exp,
 #define NAPI_DEFINE_METHOD(name, func) \
   { (name), nullptr, (func), nullptr, nullptr, nullptr, napi_default, nullptr }
 
+#define NAPI_DEFINE_PROPERTY_GETTER(name, func) \
+  { (name), nullptr, nullptr, (func), nullptr, nullptr, napi_default, nullptr }
+
 inline napi_property_descriptor NapiDefineIntProperty(napi_env env,
                                                       int32_t value,
                                                       const char* name) {

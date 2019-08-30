@@ -455,6 +455,24 @@ void EGLContextWrapper::RefreshGLExtensions() {
           glGetString(GL_REQUESTABLE_EXTENSIONS_ANGLE))));
 }
 
+int32_t EGLContextWrapper::QuerySurfaceHeight() {
+  int32_t value = 0;
+  if (!eglQuerySurface(display, surface, EGL_HEIGHT, &value)) {
+    std::cerr << "Failed to query EGL surface" << std::endl;
+  }
+
+  return value;
+}
+
+int32_t EGLContextWrapper::QuerySurfaceWidth() {
+  int32_t value = 0;
+  if (!eglQuerySurface(display, surface, EGL_WIDTH, &value)) {
+    std::cerr << "Failed to query EGL surface" << std::endl;
+  }
+
+  return value;
+}
+
 EGLContextWrapper::~EGLContextWrapper() {
   if (context) {
     if (!eglDestroyContext(display, context)) {

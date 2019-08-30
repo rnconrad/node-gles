@@ -39,6 +39,12 @@ class WebGLRenderingContext {
   static napi_value InitInternal(napi_env env, napi_callback_info info);
   static void Cleanup(napi_env env, void* native, void* hint);
 
+  static napi_value GetCanvas(napi_env env, napi_callback_info info);
+  static napi_value GetDrawingBufferHeight(napi_env env,
+                                           napi_callback_info info);
+  static napi_value GetDrawingBufferWidth(napi_env env,
+                                          napi_callback_info info);
+
   // User facing methods:
   static napi_value ActiveTexture(napi_env env, napi_callback_info info);
   static napi_value AttachShader(napi_env env, napi_callback_info info);

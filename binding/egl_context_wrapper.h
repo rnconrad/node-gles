@@ -236,6 +236,9 @@ class EGLContextWrapper {
   // Refreshes extensions list:
   void RefreshGLExtensions();
 
+  int32_t QuerySurfaceHeight();
+  int32_t QuerySurfaceWidth();
+
  private:
   EGLContextWrapper(napi_env env, const GLContextOptions& context_options);
 
